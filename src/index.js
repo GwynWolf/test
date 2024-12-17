@@ -3,6 +3,7 @@ const {faker} = require('@faker-js/faker'); // пакет для генерац�
 
 const a;
 
+slpmkln mjl mnjo 
 const url = 'mongodb://localhost:27117';
 const client = new MongoClient(url);
 // Задать имя базы данных
