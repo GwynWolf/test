@@ -1,6 +1,8 @@
 const {MongoClient} = require('mongodb');
 const {faker} = require('@faker-js/faker'); // пакет для генерации случайных данных
 
+const a;
+
 const url = 'mongodb://localhost:27117';
 const client = new MongoClient(url);
 // Задать имя базы данных
