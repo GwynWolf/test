@@ -1,0 +1,74 @@
+services:
+# имя сервиса
+  mongo:
+  # образ сервиса
+  # можно написать mongo:7.0.14
+  # :stable - для загрузки стабильной версии
+  # без параметра - будет загружена последняя актуальная версия
+    image: mongo
+    container_name: ${APP_NAME:?err}-mongo
+    # перезагрузить в случае сбоя
+    restart: always
+    # на локальной машине порт 27117
+    # подключить к порту 27017 виртуальной машины
+    ports:
+      - ${MongoDB_PORT:?err}:27017
+# свойства переменных окружения:
+# задать имя пользователя и пароль
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: ${MongoDB_USERNAME:?err}
+#      MONGO_INITDB_ROOT_PASSWORD: ${MongoDB_PASSWORD:?err}
+# при запуске каждый раз виртуальная машина 
+# создается из образа - то есть внесенные изменения
+# не сохраняются 
+    volumes:
+      # в этих папках MongoDB хранит свои данные
+      # - поэтому их нужно сохранить, например, 
+      # в текущей папке проекта
+      # точка в пути обозначает текущий каталог
+      # папку mongo/data в текущей директории
+      # связать с папкой /data/db в контейнере
+      - ./mongo/data:/data/db
+      # папку mongo/config в текущей директории
+      # связать с папкой /data/configdb в контейнере
+      #- ./mongo/config:/data/configdb
+      
+      # эту папку синхронизируем для обмена данными
+      # папку home в текущей директории
+      # связать с папкой /home/ubuntu в контейнере
+      #- ./mongo/home:/home/ubuntu
+    #command: "mongoimport --db lab-06 --collection students --file /home/ubuntu/students.json --jsonArray"
+    
+    # NodeJS будем использовать с локального компьютера
+  # node:
+    # image: node
+    # container_name: ${APP_NAME:?err}-node
+    # user: node
+    # working_dir: /home/node/app
+    # environment:
+      # - NODE_ENV=production
+    # volumes:
+      # - ./:/home/node/app
+      # - ./log:/home/node/.npm/
+    # expose:
+      # - "8081"
+    # ports: # use if it is necessary to expose the container to the host machine
+      # - "8001:8001"
+    # command: "node ./src/app.js"
+    
+networks:
+  default:
+    name: ${NETWORK_NAME:?err}
+
+# docker-compose up -d
+# docker-compose down
+# получить доступ к командной строке на виртуальной машине
+# docker exec -it some-virtual bash
+# docker exec NoSQL-mongo sh -c "exec mongoimport mongodb://root:example@localhost:27017 --db lab-04 --collection students --file /home/ubuntu/generated.json --jsonArray"
+# docker exec NoSQL-mongo sh -c "exec mongoimport --db lab-04 --collection students --file /home/ubuntu/generated.json --jsonArray"
+# docker exec NoSQL-mongo sh -c "exec mongoimport --db lab-04 --collection students --file /home/ubuntu/students.json --jsonArray"
+
+# mongoexport --collection orders --db lab-04 --out /home/ubuntu/orders.json
+# mongodump --db lab-04 --out /home/ubuntu/dump
+# mongorestore --db lab-04 /home/ubuntu/dump/lab-04
+# mongosh /home/ubuntu/import-students.js
